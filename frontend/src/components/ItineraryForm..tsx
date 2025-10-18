@@ -4,6 +4,7 @@ import { FiCalendar, FiCheckCircle } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../utils/axios';
 import { useItineraryStore } from '../store/itineraryStore';
+import { toast } from 'react-toastify';
 
 export default function ItineraryForm() {
   const [destination, setDestination] = useState<{ name: string; lat: string; lon: string } | null>(null);
@@ -22,7 +23,7 @@ export default function ItineraryForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!destination) return alert('Please select a destination!');
+    if (!destination) return toast.error('Please select a destination!');
     setLoading(true);
 
     try {
@@ -39,7 +40,7 @@ export default function ItineraryForm() {
       }
     } catch (err) {
       console.error(err);
-      alert('Something went wrong');
+      toast.error('Something went wrong');
     } finally {
       setLoading(false);
     }

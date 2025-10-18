@@ -33,7 +33,7 @@ export default function AppRoutes() {
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/forgot" element={<ForgotPassword />} />
-          <Route path="/auth/reset" element={<ResetPassword />} />
+          <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
 
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
