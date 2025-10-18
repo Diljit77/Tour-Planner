@@ -1,12 +1,13 @@
 
 import { create } from 'zustand';
-
 interface Activity {
   time: string;
   place: string;
   type: string;
   description: string;
   image?: string;
+  budget?: string; 
+  link?: string;   
 }
 
 interface Day {
@@ -14,6 +15,7 @@ interface Day {
   title: string;
   activities: Activity[];
 }
+
 
 interface ItineraryState {
   itinerary: Day[] | null;

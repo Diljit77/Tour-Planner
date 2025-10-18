@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useItineraryStore } from "../store/itineraryStore";
 import {
   FiTrash2,
@@ -9,6 +9,7 @@ import {
   FiStar,
   FiMap,
 } from "react-icons/fi";
+import { fetchWeather } from "../utils/weather";
 
 const typeIcons: Record<string, ReactNode> = {
   Restaurant: <FiCoffee className="text-teal-500 w-6 h-6" />,
@@ -20,13 +21,24 @@ const typeIcons: Record<string, ReactNode> = {
 
 export default function TripDetail() {
   const { itinerary, destination, setItinerary } = useItineraryStore();
+  const [weather, setWeather] = useState<
+    { temp: number; description: string; icon: string }[]
+  >([]);
 
+  useEffect(() => {
+    if (destination) {
+      fetchWeather(destination)
+        .then(setWeather)
+        .catch(console.error);
+    }
+  }, [destination]);
   if (!itinerary || !itinerary.length)
     return (
       <div className="text-center py-20 text-slate-700">
         No itinerary found
       </div>
     );
+
 
   const handleDeletePlace = (dayIndex: number, placeIndex: number) => {
     const newItinerary = itinerary.map((day, idx) =>
@@ -42,7 +54,7 @@ export default function TripDetail() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#E0F7FA] via-white to-[#F1F8E9] px-4 md:px-6 py-10 pt-20">
-    \
+    
       <div className="text-center mb-12 px-2 md:px-0">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#1B998B] drop-shadow-sm animate-fadeIn">
           {destination} – Your AI Itinerary
@@ -59,8 +71,20 @@ export default function TripDetail() {
         
             <div className="text-center">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#3FC1C9] animate-fadeIn">
-                Day {day.day} – {day.title}
+                 {day.title}
               </h2>
+                {weather[dayIndex] && (
+    <div className="flex items-center justify-center gap-2 mt-2">
+      <img
+        src={weather[dayIndex].icon}
+        alt={weather[dayIndex].description}
+        className="w-6 h-6"
+      />
+      <span className="text-sm font-semibold text-teal-600">
+        {weather[dayIndex].temp}°C | {weather[dayIndex].description}
+      </span>
+    </div>
+  )}
               <div className="h-1 w-20 sm:w-24 bg-[#3FC1C9] mx-auto mt-3 rounded-full animate-pulse"></div>
             </div>
 
@@ -125,7 +149,10 @@ export default function TripDetail() {
                                 View Location
                               </span>
                             </div>
-                          </div>
+                            <p className="text-sm font-medium text-gray-600 mt-1">
+  {act.budget ? `Budget: ${act.budget}` : "Budget: N/A"}
+</p>
+                    </div>
 
                     
                           <button
