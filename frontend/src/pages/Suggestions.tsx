@@ -1,50 +1,73 @@
-import { FiHeart, FiMapPin } from 'react-icons/fi';
+import { useEffect, useState } from "react";
+import { axiosInstance } from "../utils/axios";
+import { Link } from "react-router-dom";
+import { FiMapPin, FiClock, FiArrowRight } from "react-icons/fi";
 
-const dummy = [
-  {id:1, name:'Bali, Indonesia', tags:['Nature','Relaxation'], img:'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80'},
-  {id:2, name:'Sahara Desert', tags:['Adventure','Relaxation'], img:'https://images.unsplash.com/photo-1549887534-4d2b2d88c7d4?auto=format&fit=crop&w=800&q=80'},
-  {id:3, name:'Kyoto, Japan', tags:['Culture','Nature'], img:'https://images.unsplash.com/photo-1559181567-c3190ca9959b?auto=format&fit=crop&w=800&q=80'}
-];
+export default function Discover() {
+  const [trips, setTrips] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default function Suggestions() {
+  useEffect(() => {
+    const fetchTrips = async () => {
+      try {
+        const res = await axiosInstance.get("/trips/popular");
+        if (res.data.success) setTrips(res.data.trips);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTrips();
+  }, []);
+
+  if (loading) return <p className="text-center py-10">Loading Discover Trips...</p>;
+
   return (
-    <div className="max-w-7xl mx-auto px-6 py-28">
-      <h2 className="text-3xl font-bold mb-10 text-[#102A43] text-center">
-        Suggested Trips for You
-      </h2>
+    <div className="max-w-7xl mx-auto px-6 py-24 pt-16">
+      <h1 className="text-4xl font-bold text-[#102A43] mb-10 text-center">
+        🌍 Discover Popular Trips
+      </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {dummy.map(d => (
-          <div
-            key={d.id}
-            className="bg-white/20 backdrop-blur-md rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform cursor-pointer flex flex-col"
-          >
-            <div className="relative h-52">
-              <img src={d.img} alt={d.name} className="w-full h-full object-cover" />
-              <div className="absolute top-2 right-2 bg-white/30 rounded-full p-2 shadow">
-                <FiMapPin className="text-[#3FC1C9]" size={20} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {trips.map((item, index) => {
+          const trip = item.trip;
+          const image =
+            trip?.places?.[0]?.image ||
+            "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg";
+
+          return (
+            <div
+              key={index}
+              className="bg-white/30 backdrop-blur-md rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-transform hover:scale-[1.02]"
+            >
+              <img src={image} alt={trip.destination} className="w-full h-64 object-cover" />
+              <div className="p-5">
+                <h2 className="text-2xl font-bold text-[#102A43] mb-2">{trip.destination}</h2>
+                <div className="flex items-center text-gray-600 gap-3 mb-3">
+                  <FiClock className="text-[#3FC1C9]" />
+                  <span>{item.count} Planned Trips</span>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {trip.interests?.slice(0, 3).map((tag:any, i:any) => (
+                    <span
+                      key={i}
+                      className="bg-gradient-to-r from-[#3FC1C9]/20 to-[#72EFDD]/20 text-[#1B998B] px-3 py-1 rounded-full text-sm font-medium"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                {/* <Link
+                   to={`/trip/${trip._id}`}
+                  className="inline-flex items-center gap-2 text-white bg-gradient-to-r from-[#3FC1C9] to-[#72EFDD] px-4 py-2 rounded-xl font-medium hover:scale-105 transition"
+                >
+                  <FiMapPin /> Explore <FiArrowRight />
+                </Link> */}
               </div>
             </div>
-            <div className="p-4 flex flex-col flex-1">
-              <div className="font-semibold text-[#102A43] text-lg">{d.name}</div>
-              <div className="mt-2 flex gap-2 flex-wrap text-sm">
-                {d.tags.map(t => (
-                  <div key={t} className="px-2 py-1 bg-white/30 rounded-full text-[#102A43]">
-                    {t}
-                  </div>
-                ))}
-              </div>
-              <div className="mt-auto flex gap-2 pt-4">
-                <button className="flex-1 px-3 py-2 rounded-lg bg-gradient-to-r from-[#3FC1C9] to-[#72EFDD] text-white font-medium hover:scale-105 transition-transform flex items-center justify-center gap-1">
-                  <FiHeart /> Add to Planner
-                </button>
-                <button className="flex-1 px-3 py-2 rounded-lg border border-white/30 text-[#102A43] font-medium hover:scale-105 transition-transform">
-                  Save
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

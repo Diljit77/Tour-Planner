@@ -7,7 +7,8 @@ const tripSchema = new mongoose.Schema({
   startDate: Date,
   endDate: Date,
   interests: [String],
-  places: [{ type: mongoose.Schema.Types.ObjectId, ref: "Place" }]
+  places: [{ type: mongoose.Schema.Types.ObjectId, ref: "Place" }],
+  plan: { type: Array, default: [] },
 });
 
 export default mongoose.model("Trip", tripSchema);

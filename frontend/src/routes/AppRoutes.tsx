@@ -28,6 +28,8 @@ export default function AppRoutes() {
           <Route path="/suggestions" element={<Suggestions />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/trip" element={<TripDetail />} />
+      <Route path="/trip/:id" element={<TripDetail />} />
+
 
 
           <Route path="/auth/login" element={<Login />} />

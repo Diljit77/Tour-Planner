@@ -7,7 +7,9 @@ const placeSchema = new mongoose.Schema({
   description: String,
   image: String,
   day: Number,
-  time: String
+  time: String,
+  budget: String,
+  link: String,   
 });
 
 export default mongoose.model("Place", placeSchema);
