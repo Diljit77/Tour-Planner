@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../utils/axios";
-import { Link } from "react-router-dom";
-import { FiMapPin, FiClock, FiArrowRight } from "react-icons/fi";
+
+import {  FiClock, } from "react-icons/fi";
 
 export default function Discover() {
   const [trips, setTrips] = useState<any[]>([]);
